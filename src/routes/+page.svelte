@@ -32,13 +32,19 @@
     function toggleDarkMode() {
       darkMode = !darkMode;
       document.body.classList.toggle('dark-mode', darkMode);
+      localStorage.setItem('darkMode', darkMode.toString());
     }
   
     onMount(() => {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        darkMode = true;
-        document.body.classList.add('dark-mode');
-      }
+      const storedDarkMode = localStorage.getItem('darkMode');
+    if (storedDarkMode !== null) {
+      darkMode = storedDarkMode === 'true';
+      document.body.classList.toggle('dark-mode', darkMode);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkMode = true;
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('darkMode', 'true');
+    }
     });
   
     $: formatJSON(jsonInput);
@@ -122,19 +128,22 @@
   
     .output-container {
       position: relative;
-      background-color: #f4f4f4;
-      padding: 2rem;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f4f4f4;
+    padding: 2rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #1c1c1c;
     }
   
-    pre {
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
   
+
+  pre {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
     .error-message {
       color: #d32f2f;
       font-weight: bold;
